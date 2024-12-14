@@ -32,7 +32,6 @@ export default function Home() {
         body: JSON.stringify({ message }),
       });
 
-      // TODO: Handle the response from the chat API to display the AI response in the UI
       const data = await response.json();
       console.log("Data: ", data);
 
@@ -49,17 +48,17 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#f8f8f6]"> {/* Off-white outer background */}
+    <div className="flex flex-col h-screen bg-white">
       {/* Header */}
       <div className="w-full bg-blue-300 border-b border-blue-200 p-4">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-xl font-semibold text-gray-800">Your Academic AI Assitant</h1>
+          <h1 className="text-xl font-semibold text-gray-800">Your Research AI Assistant</h1>
         </div>
       </div>
   
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto pb-32 pt-4">
-        <div className="max-w-3xl mx-auto bg-[#faf3e0] px-4 py-6 rounded-lg"> {/* Pastel blue-gray chat background */}
+        <div className="max-w-3xl mx-auto px-4">
           {messages.map((msg, index) => (
             <div
               key={index}
@@ -116,4 +115,5 @@ export default function Home() {
       </div>
     </div>
   );
+  
 }
