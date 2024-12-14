@@ -19,7 +19,7 @@ export default function Home() {
 
     // Add user message to the conversation
     const userMessage = { role: "user" as const, content: message };
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setMessage("");
     setIsLoading(true);
 
@@ -32,21 +32,26 @@ export default function Home() {
         body: JSON.stringify({ message }),
       });
 
-      // TODO: Handle the response from the chat API to display the AI response in the UI
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
 
+      const data = await response.json();
 
-
-
+      // Add AI response to the conversation
+      const aiMessage = { role: "ai" as const, content: data.response };
+      setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
       console.error("Error:", error);
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", content: "Sorry, there was an error processing your request." },
+      ]);
     } finally {
       setIsLoading(false);
     }
   };
 
-
-  // TODO: Modify the color schemes, fonts, and UI as needed for a good user experience
-  // Refer to the Tailwind CSS docs here: https://tailwindcss.com/docs/customizing-colors, and here: https://tailwindcss.com/docs/hover-focus-and-other-states
   return (
     <div className="flex flex-col h-screen bg-gray-900">
       {/* Header */}
@@ -83,19 +88,25 @@ export default function Home() {
             <div className="flex gap-4 mb-4">
               <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-gray-400"
+                  className="w-5 h-5 text-gray-400 animate-spin"
                   viewBox="0 0 24 24"
-                  fill="currentColor"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-4-8c.79 0 1.5-.71 1.5-1.5S8.79 9 8 9s-1.5.71-1.5 1.5S7.21 11 8 11zm8 0c.79 0 1.5-.71 1.5-1.5S16.79 9 16 9s-1.5.71-1.5 1.5.71 1.5 1.5 1.5zm-4 4c2.21 0 4-1.79 4-4h-8c0 2.21 1.79 4 4 4z" />
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    className="opacity-25"
+                  />
+                  <path
+                    d="M4 12a8 8 0 0116 0"
+                    className="opacity-75"
+                    fill="currentColor"
+                  />
                 </svg>
-              </div>
-              <div className="px-4 py-2 rounded-2xl bg-gray-800 border border-gray-700 text-gray-100">
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
-                </div>
               </div>
             </div>
           )}
@@ -109,8 +120,8 @@ export default function Home() {
             <input
               type="text"
               value={message}
-              onChange={e => setMessage(e.target.value)}
-              onKeyPress={e => e.key === "Enter" && handleSend()}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && handleSend()}
               placeholder="Type your message..."
               className="flex-1 rounded-xl border border-gray-700 bg-gray-900 px-4 py-3 text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent placeholder-gray-400"
             />

@@ -1,3 +1,15 @@
+
+//"extends": ["next/core-web-vitals", "next/typescript"]
 {
+  "overrides": [
+    {
+      "files": ["src/some-file.js", "src/another-file.js"],
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ],
   "extends": ["next/core-web-vitals", "next/typescript"]
 }
+  
+
